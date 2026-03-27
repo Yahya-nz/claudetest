@@ -19,6 +19,48 @@ $timeSlots = $timeSlotsStmt->fetchAll();
 $daysInMonth = cal_days_in_month(CAL_GREGORIAN, $month, $year);
 $firstDayOfMonth = date('N', strtotime("$year-$month-01"));
 
+// Calculate total weeks (7-day blocks from day 1, so week 1 = days 1-7, week 2 = days 8-14, etc.)
+$totalWeeks = (int)ceil($daysInMonth / 7);
+
+// Get week parameter — defaults to the week containing today (current month) or week 1 (other months)
+if (isset($_GET['week'])) {
+    $week = max(1, min((int)$_GET['week'], $totalWeeks));
+} elseif ($month == (int)date('n') && $year == (int)date('Y')) {
+    $week = (int)ceil((int)date('j') / 7);
+} else {
+    $week = 1;
+}
+
+// startDay/endDay for the current week view
+$startDay = ($week - 1) * 7 + 1;
+$endDay   = min($week * 7, $daysInMonth);
+
+// Build prev-week navigation target
+if ($week > 1) {
+    $prevWeekMonth = $month; $prevWeekYear = $year; $prevWeekNum = $week - 1;
+    $prevWeekLabel = '< Minggu ' . ($week - 1);
+} else {
+    $prevWeekMonth = $month - 1; $prevWeekYear = $year;
+    if ($prevWeekMonth < 1) { $prevWeekMonth = 12; $prevWeekYear--; }
+    $prevWeekDays  = cal_days_in_month(CAL_GREGORIAN, $prevWeekMonth, $prevWeekYear);
+    $prevWeekNum   = (int)ceil($prevWeekDays / 7);
+    $prevWeekLabel = '< Bulan Lalu';
+}
+
+// Build next-week navigation target
+if ($week < $totalWeeks) {
+    $nextWeekMonth = $month; $nextWeekYear = $year; $nextWeekNum = $week + 1;
+    $nextWeekLabel = 'Minggu ' . ($week + 1) . ' >';
+} else {
+    $nextWeekMonth = $month + 1; $nextWeekYear = $year; $nextWeekNum = 1;
+    if ($nextWeekMonth > 12) { $nextWeekMonth = 1; $nextWeekYear++; }
+    $nextWeekLabel = 'Bulan Depan >';
+}
+
+// Today button target
+$todayMonth = (int)date('n'); $todayYear = (int)date('Y');
+$todayWeek  = (int)ceil((int)date('j') / 7);
+
 // Get operation start date
 $operationStartDateStmt = $db->prepare("SELECT setting_value FROM site_settings WHERE setting_key = 'operation_start_date'");
 $operationStartDateStmt->execute();
@@ -168,15 +210,26 @@ $monthNames = [
                         <h3 style="color: white; margin: 0;">
                             <i data-lucide="calendar" width="24" height="24" style="vertical-align: middle; margin-right: 8px;"></i>
                             Jadwal <?php echo $monthNames[$month]; ?> <?php echo $year; ?>
+                            <span style="font-size: 0.85rem; font-weight: 400; opacity: 0.85; margin-left: 8px;">- Minggu <?php echo $week; ?>/<?php echo $totalWeeks; ?></span>
                         </h3>
-                        <div class="d-flex gap-2">
-                            <a href="?month=<?php echo $month - 1; ?>&year=<?php echo $year; ?>" class="btn btn-sm" style="background: rgba(255,255,255,0.2); color: white;">
-                                <i data-lucide="chevron-left" width="18" height="18"></i>
-                                Sebelumnya
+                        <div class="d-flex gap-2 flex-wrap">
+                            <a href="?month=<?php echo $month == 1 ? 12 : $month - 1; ?>&year=<?php echo $month == 1 ? $year - 1 : $year; ?>&week=1" class="btn btn-sm" style="background: rgba(255,255,255,0.2); color: white;">
+                                <i data-lucide="chevrons-left" width="18" height="18"></i>
+                                Bulan Lalu
                             </a>
-                            <a href="?month=<?php echo $month + 1; ?>&year=<?php echo $year; ?>" class="btn btn-sm" style="background: rgba(255,255,255,0.2); color: white;">
-                                Selanjutnya
-                                <i data-lucide="chevron-right" width="18" height="18"></i>
+                            <a href="?month=<?php echo $prevWeekMonth; ?>&year=<?php echo $prevWeekYear; ?>&week=<?php echo $prevWeekNum; ?>" class="btn btn-sm" style="background: rgba(255,255,255,0.2); color: white;">
+                                <?php echo $prevWeekLabel; ?>
+                            </a>
+                            <a href="?month=<?php echo $todayMonth; ?>&year=<?php echo $todayYear; ?>&week=<?php echo $todayWeek; ?>" class="btn btn-sm" style="background: rgba(255,255,255,0.3); color: white;">
+                                <i data-lucide="calendar" width="18" height="18"></i>
+                                Hari Ini
+                            </a>
+                            <a href="?month=<?php echo $nextWeekMonth; ?>&year=<?php echo $nextWeekYear; ?>&week=<?php echo $nextWeekNum; ?>" class="btn btn-sm" style="background: rgba(255,255,255,0.2); color: white;">
+                                <?php echo $nextWeekLabel; ?>
+                            </a>
+                            <a href="?month=<?php echo $month == 12 ? 1 : $month + 1; ?>&year=<?php echo $month == 12 ? $year + 1 : $year; ?>&week=1" class="btn btn-sm" style="background: rgba(255,255,255,0.2); color: white;">
+                                Bulan Depan
+                                <i data-lucide="chevrons-right" width="18" height="18"></i>
                             </a>
                         </div>
                     </div>
@@ -188,16 +241,10 @@ $monthNames = [
                         <thead>
                             <tr style="background: var(--primary-50);">
                                 <th style="padding: var(--space-md); text-align: left; font-weight: 600; min-width: 100px; border-bottom: 2px solid var(--primary-200);">Jam</th>
-                                <?php 
-                                // Show next 7 days from today or first of month
-                                $startDay = max(1, (int)date('j'));
-                                if ($month != (int)date('n') || $year != (int)date('Y')) {
-                                    $startDay = 1;
-                                }
-                                
+                                <?php
                                 $dayNames = ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'];
-                                
-                                for ($d = $startDay; $d <= min($startDay + 6, $daysInMonth); $d++): 
+
+                                for ($d = $startDay; $d <= $endDay; $d++):
                                     $dateStr = "$year-" . str_pad($month, 2, '0', STR_PAD_LEFT) . "-" . str_pad($d, 2, '0', STR_PAD_LEFT);
                                     $dayOfWeek = date('N', strtotime($dateStr)) - 1;
                                     $isWeekend = $dayOfWeek >= 5;
@@ -215,7 +262,7 @@ $monthNames = [
                                 <td style="padding: var(--space-md); font-weight: 600; border-bottom: 1px solid var(--gray-100);">
                                     <?php echo date('H:i', strtotime($slot['start_time'])); ?> - <?php echo date('H:i', strtotime($slot['end_time'])); ?>
                                 </td>
-                                <?php for ($d = $startDay; $d <= min($startDay + 6, $daysInMonth); $d++):
+                                <?php for ($d = $startDay; $d <= $endDay; $d++):
                                     $dateStr = "$year-" . str_pad($month, 2, '0', STR_PAD_LEFT) . "-" . str_pad($d, 2, '0', STR_PAD_LEFT);
                                     $key = $dateStr . '_' . $slot['id'];
                                     $status = isset($bookings[$key]) ? $bookings[$key] : 'available';
