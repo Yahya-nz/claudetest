@@ -56,59 +56,23 @@ if ($month > 12) { $month = 1; $year++; }
 $currentMonth = sprintf("%04d-%02d", $year, $month);
 $firstDayOfMonthDate = new DateTime("$year-$month-01");
 $lastDayOfMonthDate = new DateTime($firstDayOfMonthDate->format('Y-m-t'));
+$daysInMonth = (int)$lastDayOfMonthDate->format('d');
 
-// Find the first Monday on or after the 1st of the month
-$firstMonday = clone $firstDayOfMonthDate;
-while ($firstMonday->format('N') != 1) { // 1 = Monday
-    $firstMonday->modify('+1 day');
-}
-
-// If first Monday is in the next month, use the 1st of current month as starting point
-if ($firstMonday->format('Y-m') != $currentMonth) {
-    $firstMonday = clone $firstDayOfMonthDate;
-}
-
-// Calculate total weeks in this month
-// A week belongs to a month if its Monday is in that month
-$totalWeeks = 0;
-$tempMonday = clone $firstMonday;
-while ($tempMonday->format('Y-m') == $currentMonth) {
-    $totalWeeks++;
-    $tempMonday->modify('+7 days');
-}
-
-// Ensure at least 1 week
-if ($totalWeeks == 0) {
-    $totalWeeks = 1;
-}
+// Calculate total weeks as simple 7-day blocks from day 1:
+// Week 1 = days 1-7, Week 2 = days 8-14, etc.
+// This ensures the first days of the month (e.g. Apr 1-5) are never skipped.
+$totalWeeks = (int)ceil($daysInMonth / 7);
+if ($totalWeeks == 0) $totalWeeks = 1;
 
 // If no week specified, find the current week of the month
 if ($week === null) {
-    $today = new DateTime(date('Y-m-d'));
     $todayMonth = (int)date('n');
     $todayYear = (int)date('Y');
 
     if ($todayMonth === $month && $todayYear === $year) {
-        // Find which week of the month today is in
-        $tempMonday = clone $firstMonday;
-        $week = 1;
-
-        while ($week <= $totalWeeks) {
-            $weekEnd = clone $tempMonday;
-            $weekEnd->modify('+6 days');
-
-            if ($today >= $tempMonday && $today <= $weekEnd) {
-                break;
-            }
-
-            $week++;
-            $tempMonday->modify('+7 days');
-        }
-
-        // If today is beyond all weeks, use last week
-        if ($week > $totalWeeks) {
-            $week = $totalWeeks;
-        }
+        // Which 7-day block (from day 1) does today fall in?
+        $week = (int)ceil((int)date('j') / 7);
+        if ($week > $totalWeeks) $week = $totalWeeks;
     } else {
         $week = 1;
     }
@@ -135,8 +99,6 @@ if ($week > $totalWeeks) {
 $timeSlotsStmt = $db->query("SELECT * FROM time_slots WHERE is_active = 1 ORDER BY start_time");
 $timeSlots = $timeSlotsStmt->fetchAll();
 
-// Get days in month
-$daysInMonth = cal_days_in_month(CAL_GREGORIAN, $month, $year);
 $firstDayOfMonth = date('N', strtotime("$year-$month-01"));
 
 // Get bookings for the month
@@ -372,20 +334,9 @@ $monthNames = [
                             <tr style="background: var(--primary-50);">
                                 <th style="padding: var(--space-md); text-align: left; font-weight: 600; min-width: 100px; border-bottom: 2px solid var(--primary-200);">Jam</th>
                                 <?php
-                                // Calculate the actual week start and end dates
-                                $weekStartDate = clone $firstMonday;
-                                $weekStartDate->modify('+' . (($week - 1) * 7) . ' days');
-                                $weekEndDate = clone $weekStartDate;
-                                $weekEndDate->modify('+6 days');
-
-                                // Get day numbers for the table
-                                $startDay = (int)$weekStartDate->format('d');
-                                $endDay = (int)$weekEndDate->format('d');
-
-                                // If week spans across months, adjust endDay
-                                if ($weekEndDate->format('Y-m') != $currentMonth) {
-                                    $endDay = $daysInMonth;
-                                }
+                                // Week N = days (N-1)*7+1 through min(N*7, last day of month)
+                                $startDay = ($week - 1) * 7 + 1;
+                                $endDay   = min($week * 7, $daysInMonth);
 
                                 $dayNames = ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'];
 
