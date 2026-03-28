@@ -56,11 +56,12 @@ if ($month > 12) { $month = 1; $year++; }
 $currentMonth = sprintf("%04d-%02d", $year, $month);
 $firstDayOfMonthDate = new DateTime("$year-$month-01");
 $lastDayOfMonthDate = new DateTime($firstDayOfMonthDate->format('Y-m-t'));
-$daysInMonth = (int)$lastDayOfMonthDate->format('d');
 
-// Calculate total weeks as simple 7-day blocks from day 1:
-// Week 1 = days 1-7, Week 2 = days 8-14, etc.
-// This ensures the first days of the month (e.g. Apr 1-5) are never skipped.
+// FIX: week 1 always starts from day 1 of the month (not the first Monday).
+// Weeks are simple 7-day blocks: week 1 = days 1-7, week 2 = days 8-14, etc.
+// This prevents days 1-5 (or similar) from being skipped when the month
+// doesn't start on a Monday.
+$daysInMonth = cal_days_in_month(CAL_GREGORIAN, $month, $year);
 $totalWeeks = (int)ceil($daysInMonth / 7);
 if ($totalWeeks == 0) $totalWeeks = 1;
 
@@ -70,7 +71,6 @@ if ($week === null) {
     $todayYear = (int)date('Y');
 
     if ($todayMonth === $month && $todayYear === $year) {
-        // Which 7-day block (from day 1) does today fall in?
         $week = (int)ceil((int)date('j') / 7);
         if ($week > $totalWeeks) $week = $totalWeeks;
     } else {
@@ -99,6 +99,7 @@ if ($week > $totalWeeks) {
 $timeSlotsStmt = $db->query("SELECT * FROM time_slots WHERE is_active = 1 ORDER BY start_time");
 $timeSlots = $timeSlotsStmt->fetchAll();
 
+// Get days in month
 $firstDayOfMonth = date('N', strtotime("$year-$month-01"));
 
 // Get bookings for the month
@@ -148,7 +149,7 @@ $monthNames = [
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Jadwal - <?php echo getSetting('site_name'); ?></title>
-    
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -334,13 +335,15 @@ $monthNames = [
                             <tr style="background: var(--primary-50);">
                                 <th style="padding: var(--space-md); text-align: left; font-weight: 600; min-width: 100px; border-bottom: 2px solid var(--primary-200);">Jam</th>
                                 <?php
-                                // Week N = days (N-1)*7+1 through min(N*7, last day of month)
+                                // FIX: week N = days (N-1)*7+1 through min(N*7, daysInMonth)
+                                // This replaces the old firstMonday-based calculation that skipped
+                                // days at the start of the month before the first Monday.
                                 $startDay = ($week - 1) * 7 + 1;
                                 $endDay   = min($week * 7, $daysInMonth);
 
                                 $dayNames = ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'];
 
-                                for ($d = $startDay; $d <= $endDay; $d++): 
+                                for ($d = $startDay; $d <= $endDay; $d++):
                                     $dateStr = "$year-" . str_pad($month, 2, '0', STR_PAD_LEFT) . "-" . str_pad($d, 2, '0', STR_PAD_LEFT);
                                     $dayOfWeek = date('N', strtotime($dateStr)) - 1;
                                     $isWeekend = $dayOfWeek >= 5;
@@ -436,7 +439,7 @@ $monthNames = [
 
     <script>
         lucide.createIcons();
-        
+
         // Header scroll effect
         window.addEventListener('scroll', function() {
             const header = document.getElementById('header');
@@ -452,19 +455,19 @@ $monthNames = [
         const mobileNav = document.getElementById('mobileNav');
         const mobileNavOverlay = document.getElementById('mobileNavOverlay');
         const mobileNavClose = document.getElementById('mobileNavClose');
-        
+
         function openMobileNav() {
             mobileNav.classList.add('active');
             mobileNavOverlay.classList.add('active');
             document.body.style.overflow = 'hidden';
         }
-        
+
         function closeMobileNav() {
             mobileNav.classList.remove('active');
             mobileNavOverlay.classList.remove('active');
             document.body.style.overflow = '';
         }
-        
+
         menuToggle?.addEventListener('click', openMobileNav);
         mobileNavClose?.addEventListener('click', closeMobileNav);
         mobileNavOverlay?.addEventListener('click', closeMobileNav);
