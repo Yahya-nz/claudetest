@@ -117,7 +117,7 @@ foreach ($closedDatesData as $closedDate) {
 }
 
 $bookingsStmt = $db->prepare("
-    SELECT b.booking_date, b.time_slot_id, b.status, b.team_name, b.customer_name, t.start_time, t.end_time
+    SELECT b.booking_date, b.time_slot_id, b.status, b.team_name, t.start_time, t.end_time
     FROM bookings b
     JOIN time_slots t ON b.time_slot_id = t.id
     WHERE b.booking_date BETWEEN ? AND ?
@@ -131,9 +131,8 @@ $bookings = [];
 foreach ($bookingsData as $booking) {
     $key = $booking['booking_date'] . '_' . $booking['time_slot_id'];
     $bookings[$key] = [
-        'status'        => $booking['status'],
-        'team_name'     => $booking['team_name'],
-        'customer_name' => $booking['customer_name']
+        'status' => $booking['status'],
+        'team_name' => $booking['team_name']
     ];
 }
 
@@ -364,7 +363,7 @@ $monthNames = [
                                     $key = $dateStr . '_' . $slot['id'];
                                     $bookingInfo = isset($bookings[$key]) ? $bookings[$key] : null;
                                     $status = $bookingInfo ? $bookingInfo['status'] : 'available';
-                                    $teamName = $bookingInfo ? ($bookingInfo['team_name'] ?: $bookingInfo['customer_name']) : '';
+                                    $teamName = $bookingInfo ? $bookingInfo['team_name'] : '';
                                     $isPast = strtotime($dateStr) < strtotime(date('Y-m-d'));
 
                                     // Check if date is before operation start date
@@ -396,18 +395,12 @@ $monthNames = [
                                         Tersedia
                                     </a>
                                     <?php elseif ($status === 'pending'): ?>
-                                    <span class="time-slot pending" style="display:flex; flex-direction:column; gap:2px;" title="Tim: <?php echo htmlspecialchars($teamName); ?>">
-                                        <span>Pending</span>
-                                        <?php if ($teamName): ?>
-                                        <span style="font-size:0.7rem; opacity:0.85; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:90px;"><?php echo htmlspecialchars($teamName); ?></span>
-                                        <?php endif; ?>
+                                    <span class="time-slot pending" title="Tim: <?php echo htmlspecialchars($teamName); ?>">
+                                        <?php echo htmlspecialchars($teamName ?: 'Pending'); ?>
                                     </span>
                                     <?php elseif ($status === 'confirmed'): ?>
-                                    <span class="time-slot booked" style="display:flex; flex-direction:column; gap:2px;" title="Tim: <?php echo htmlspecialchars($teamName); ?>">
-                                        <span>Booked</span>
-                                        <?php if ($teamName): ?>
-                                        <span style="font-size:0.7rem; opacity:0.85; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:90px;"><?php echo htmlspecialchars($teamName); ?></span>
-                                        <?php endif; ?>
+                                    <span class="time-slot booked" title="Tim: <?php echo htmlspecialchars($teamName); ?>">
+                                        <?php echo htmlspecialchars($teamName ?: 'Booked'); ?>
                                     </span>
                                     <?php else: ?>
                                     <span class="time-slot" style="background: var(--gray-100); color: var(--gray-400);">-</span>
