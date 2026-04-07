@@ -200,7 +200,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $paidAmount = 0;
             $dpDeadline = null;
             if ($paymentType === 'dp') {
-                $paidAmount = ceil($totalPrice * $dpPercentage / 100);
+                $paidAmount = 100000; // DP flat Rp 100.000
                 // Calculate deadline date
                 $deadlineDate = new DateTime($bookingDate);
                 $deadlineDate->modify("-{$dpDeadlineDays} days");
@@ -305,7 +305,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Payment info based on payment type
             if ($paymentType === 'dp') {
                 $message .= "<div style='background-color: #fef3c7; padding: 15px; border-radius: 8px; border-left: 4px solid #f59e0b; margin-top: 10px;'>";
-                $message .= "<strong style='color: #92400e;'>Pembayaran DP ({$dpPercentage}%):</strong><br>";
+                $message .= "<strong style='color: #92400e;'>Pembayaran DP (Rp100.000):</strong><br>";
                 $message .= "<div style='margin-top: 10px; background-color: white; padding: 10px; border-radius: 4px;'>";
                 $message .= "<strong>Bank:</strong> " . getSetting('bank_name') . "<br>";
                 $message .= "<strong>No. Rekening:</strong> <span style='font-family: monospace; font-size: 16px;'>" . getSetting('bank_account_number') . "</span><br>";
@@ -534,10 +534,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                                 <div style="flex: 1;">
                                                     <div style="font-weight: 700; font-size: 1rem; color: var(--gray-800); margin-bottom: 4px;">
                                                         <i data-lucide="clock" width="18" height="18" style="vertical-align: middle; margin-right: 4px; color: #f59e0b;"></i>
-                                                        DP <?php echo $dpPercentage; ?>%
+                                                        DP Rp100.000
                                                     </div>
                                                     <div style="color: var(--gray-600); font-size: 0.875rem; margin-bottom: 8px;">
-                                                        Bayar <?php echo $dpPercentage; ?>% dulu, sisanya <?php echo $dpDeadlineDays == 0 ? 'di hari H' : $dpDeadlineDays . ' hari sebelum main'; ?>
+                                                        Bayar Rp100.000 dulu, sisanya <?php echo $dpDeadlineDays == 0 ? 'di hari H' : $dpDeadlineDays . ' hari sebelum main'; ?>
                                                     </div>
                                                     <div style="display: flex; gap: 8px; flex-wrap: wrap;">
                                                         <div style="background: #fef3c7; padding: 8px 12px; border-radius: var(--radius-md);">
@@ -645,7 +645,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Price data from PHP
         const prices = <?php echo json_encode($prices); ?>;
         const timeSlots = <?php echo json_encode($timeSlots); ?>;
-        const dpPercentage = <?php echo $dpPercentage; ?>;
+        const dpAmount = 100000; // DP flat Rp 100.000
         const dpEnabledSetting = <?php echo $dpEnabled ? 'true' : 'false'; ?>;
 
         // Track current DP availability (changes based on selected date)
@@ -873,7 +873,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             let paymentLabel = 'Total';
 
             if (dpAvailableForDate && paymentType === 'dp') {
-                displayAmount = Math.ceil(total * dpPercentage / 100);
+                displayAmount = dpAmount;
                 paymentLabel = 'Bayar Sekarang (DP)';
             }
 
@@ -886,7 +886,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 paymentTypeHtml = `
                     <div class="d-flex justify-between mb-1">
                         <span class="text-muted">Metode Bayar</span>
-                        <span class="badge ${paymentType === 'dp' ? 'badge-warning' : 'badge-success'}">${paymentType === 'dp' ? 'DP ' + dpPercentage + '%' : 'Lunas'}</span>
+                        <span class="badge ${paymentType === 'dp' ? 'badge-warning' : 'badge-success'}">${paymentType === 'dp' ? 'DP Rp100.000' : 'Lunas'}</span>
                     </div>
                 `;
             }
@@ -939,8 +939,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
 
             if (dpAmountEl && remainingAmountEl) {
-                const dpAmount = Math.ceil(total * dpPercentage / 100);
-                const remaining = total - dpAmount;
+                const dpAmt = dpAmount;
+                const remaining = total - dpAmt;
                 dpAmountEl.textContent = 'Rp ' + dpAmount.toLocaleString('id-ID');
                 remainingAmountEl.textContent = 'Rp ' + remaining.toLocaleString('id-ID');
             }

@@ -348,7 +348,7 @@ $bookings = $stmt->fetchAll();
                                         <div class="action-btns">
                                             <?php if ($booking['status'] === 'pending'): ?>
                                                 <?php if ($paymentType === 'dp'): ?>
-                                                <a href="?action=confirm_dp&id=<?php echo $booking['id']; ?>" class="action-btn action-btn-dp" title="Konfirmasi DP" onclick="return confirm('Konfirmasi DP?')">
+                                                <a href="?action=confirm_dp&id=<?php echo $booking['id']; ?>" class="action-btn action-btn-dp" title="Konfirmasi DP">
                                                     <i data-lucide="wallet" width="14" height="14"></i>
                                                 </a>
                                                 <?php else: ?>

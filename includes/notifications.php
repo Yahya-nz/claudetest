@@ -227,7 +227,7 @@ function getBookingEmailTemplate($bookingData, $type = 'created') {
 
                 <!-- DP Payment Summary -->
                 <div style='margin-top: 20px; padding: 20px; background-color: #fef3c7; border-radius: 6px; border: 2px solid #f59e0b;'>
-                    <h3 style='margin: 0 0 15px 0; color: #92400e; font-size: 16px;'>Pembayaran DP ({$dpPercentage}%):</h3>
+                    <h3 style='margin: 0 0 15px 0; color: #92400e; font-size: 16px;'>Pembayaran DP (Rp100.000):</h3>
                     <table width='100%' cellpadding='6' cellspacing='0' style='border: 1px solid #fcd34d; border-radius: 4px; background-color: white;'>
                         <tr>
                             <td style='padding: 10px; border-bottom: 1px solid #fcd34d; color: #92400e; width: 35%;'><strong>Bayar Sekarang (DP):</strong></td>
@@ -341,7 +341,7 @@ function getBookingEmailTemplate($bookingData, $type = 'created') {
         $paymentTypeRow = "
             <tr>
                 <td style='padding: 12px 15px; border-bottom: 1px solid #e5e7eb; color: #6b7280;'><strong>Tipe Pembayaran:</strong></td>
-                <td style='padding: 12px 15px; border-bottom: 1px solid #e5e7eb; color: #d97706; font-weight: bold;'>DP ({$dpPercentage}%)</td>
+                <td style='padding: 12px 15px; border-bottom: 1px solid #e5e7eb; color: #d97706; font-weight: bold;'>DP (Rp100.000)</td>
             </tr>
         ";
     }
@@ -486,7 +486,7 @@ Tim: {$teamName}
 Tanggal: {$bookingDate}
 Jam: {$timeSlot}
 Total: *{$totalPrice}*
-Tipe Bayar: *DP {$dpPercentage}%*
+Tipe Bayar: *DP Rp100.000*
 
 *STATUS: PENDING*
 Silakan bayar DP minimal *Rp 100.000*!
@@ -672,7 +672,7 @@ function getAdminEmailTemplate($bookingData) {
         $paymentTypeRow = "
             <tr>
                 <td style='padding: 12px 15px; border-bottom: 1px solid #e5e7eb; color: #6b7280;'><strong>Tipe Bayar:</strong></td>
-                <td style='padding: 12px 15px; border-bottom: 1px solid #e5e7eb; color: #d97706; font-weight: bold;'>DP ({$dpPercentage}%)</td>
+                <td style='padding: 12px 15px; border-bottom: 1px solid #e5e7eb; color: #d97706; font-weight: bold;'>DP (Rp100.000)</td>
             </tr>
             <tr>
                 <td style='padding: 12px 15px; border-bottom: 1px solid #e5e7eb; color: #6b7280;'><strong>DP yang Dibayar:</strong></td>

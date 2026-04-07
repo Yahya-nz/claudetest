@@ -202,7 +202,7 @@ $discount = $booking['base_price'] - ($booking['total_price'] - $servicesTotal);
                         ?>
                         <?php if ($booking['status'] === 'pending'): ?>
                             <?php if ($isDP): ?>
-                            <a href="?id=<?php echo $id; ?>&action=confirm" class="btn btn-warning" onclick="return confirm('Konfirmasi DP booking ini? Customer masih perlu melunasi sisa pembayaran.')">
+                            <a href="?id=<?php echo $id; ?>&action=confirm" class="btn btn-warning">
                                 <i data-lucide="wallet" width="18" height="18"></i>
                                 Konfirmasi DP
                             </a>
