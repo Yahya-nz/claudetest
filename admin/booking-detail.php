@@ -478,7 +478,7 @@ $discount = $booking['base_price'] - ($booking['total_price'] - $servicesTotal);
                                     <!-- DP Payment Info -->
                                     <div style="margin-top: 12px; padding: 12px; background: #fef3c7; border-radius: 8px; border-left: 3px solid #f59e0b;">
                                         <div style="font-size: 0.8125rem; color: #92400e;">
-                                            <strong>Tipe: DP <?php echo getSetting('dp_percentage') ?? 50; ?>%</strong>
+                                            <strong>Tipe: DP Rp100.000</strong>
                                         </div>
                                         <div style="font-size: 0.875rem; margin-top: 6px;">
                                             <span style="color: #78350f;">Dibayar:</span>

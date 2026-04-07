@@ -185,12 +185,7 @@ foreach ($settingsData as $s) {
                                             <?php echo ($settings['dp_enabled'] ?? '0') === '1' ? 'Aktif - Customer dapat memilih DP' : 'Nonaktif - Hanya bayar lunas'; ?>
                                         </span>
                                     </div>
-                                    <p class="form-hint" style="margin-top: 8px;">Jika diaktifkan, customer dapat memilih untuk membayar DP 50% atau bayar lunas</p>
-                                </div>
-                                <div class="form-group">
-                                    <label class="form-label">Persentase DP (%)</label>
-                                    <input type="number" name="dp_percentage" class="form-input" value="<?php echo htmlspecialchars($settings['dp_percentage'] ?? '50'); ?>" min="10" max="90">
-                                    <p class="form-hint">Minimal 10%, maksimal 90%. Default: 50%</p>
+                                    <p class="form-hint" style="margin-top: 8px;">Jika diaktifkan, customer dapat memilih membayar DP flat <strong>Rp100.000</strong> atau bayar lunas</p>
                                 </div>
                                 <div class="form-group">
                                     <label class="form-label">Batas Pelunasan (hari sebelum main)</label>
