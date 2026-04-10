@@ -504,101 +504,47 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <?php endif; ?>
 
 
-                            <!-- Payment Type Selection -->
-                            <div class="mb-4" id="paymentTypeSection">
+                            <!-- Payment: DP Rp100.000 (satu-satunya opsi) -->
+                            <div class="mb-4">
                                 <h4 class="mb-3" style="color: var(--primary-700);">
                                     <i data-lucide="wallet" width="20" height="20" style="vertical-align: middle; margin-right: 8px;"></i>
                                     Metode Pembayaran
                                 </h4>
-
-                                <!-- DP Available Section (hidden by default, shown via JS when date allows DP) -->
-                                <div id="dpAvailableSection" style="display: none;">
-                                    <div class="d-grid" style="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: var(--space-md);">
-                                        <!-- Full Payment Option -->
-                                        <label class="payment-option" style="padding: var(--space-lg); background: var(--gray-50); border: 2px solid var(--gray-200); border-radius: var(--radius-lg); cursor: pointer; transition: all 0.2s; display: block;">
-                                            <input type="radio" name="payment_type" value="full" checked style="display: none;">
-                                            <div style="display: flex; align-items: start; gap: var(--space-md);">
-                                                <div class="payment-radio" style="width: 24px; height: 24px; border: 2px solid var(--gray-300); border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; margin-top: 2px;">
-                                                    <div class="payment-radio-inner" style="width: 12px; height: 12px; background: var(--primary-500); border-radius: 50%; display: none;"></div>
-                                                </div>
-                                                <div style="flex: 1;">
-                                                    <div style="font-weight: 700; font-size: 1rem; color: var(--gray-800); margin-bottom: 4px;">
-                                                        <i data-lucide="check-circle" width="18" height="18" style="vertical-align: middle; margin-right: 4px; color: var(--primary-500);"></i>
-                                                        Minimal DP 100k
-                                                    </div>
-                                                    <div style="color: var(--gray-600); font-size: 0.875rem; margin-bottom: 8px;">
-                                                        DP minimal Rp 100.000, booking langsung dikonfirmasi
-                                                    </div>
-                                                    <div style="background: var(--primary-50); padding: 8px 12px; border-radius: var(--radius-md); display: inline-block;">
-                                                        <span style="font-weight: 700; color: var(--primary-600);" id="fullPaymentAmount">Rp 0</span>
-                                                    </div>
-                                                </div>
+                                <input type="hidden" name="payment_type" value="dp">
+                                <div style="padding: var(--space-lg); background: #fffbeb; border: 2px solid #f59e0b; border-radius: var(--radius-lg);">
+                                    <div style="display: flex; align-items: start; gap: var(--space-md);">
+                                        <div style="width: 48px; height: 48px; background: #f59e0b; border-radius: var(--radius-lg); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                                            <i data-lucide="clock" width="24" height="24" style="color: white;"></i>
+                                        </div>
+                                        <div style="flex: 1;">
+                                            <div style="font-weight: 700; font-size: 1rem; color: #92400e; margin-bottom: 4px;">
+                                                DP Rp100.000
                                             </div>
-                                        </label>
-
-                                        <!-- DP Payment Option -->
-                                        <label class="payment-option" style="padding: var(--space-lg); background: var(--gray-50); border: 2px solid var(--gray-200); border-radius: var(--radius-lg); cursor: pointer; transition: all 0.2s; display: block;">
-                                            <input type="radio" name="payment_type" value="dp" style="display: none;">
-                                            <div style="display: flex; align-items: start; gap: var(--space-md);">
-                                                <div class="payment-radio" style="width: 24px; height: 24px; border: 2px solid var(--gray-300); border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; margin-top: 2px;">
-                                                    <div class="payment-radio-inner" style="width: 12px; height: 12px; background: var(--primary-500); border-radius: 50%; display: none;"></div>
-                                                </div>
-                                                <div style="flex: 1;">
-                                                    <div style="font-weight: 700; font-size: 1rem; color: var(--gray-800); margin-bottom: 4px;">
-                                                        <i data-lucide="clock" width="18" height="18" style="vertical-align: middle; margin-right: 4px; color: #f59e0b;"></i>
-                                                        DP Rp100.000
-                                                    </div>
-                                                    <div style="color: var(--gray-600); font-size: 0.875rem; margin-bottom: 8px;">
-                                                        Bayar Rp100.000 dulu, sisanya <?php echo $dpDeadlineDays == 0 ? 'di hari H' : $dpDeadlineDays . ' hari sebelum main'; ?>
-                                                    </div>
-                                                    <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-                                                        <div style="background: #fef3c7; padding: 8px 12px; border-radius: var(--radius-md);">
-                                                            <span style="font-size: 0.75rem; color: #92400e;">Bayar Sekarang:</span><br>
-                                                            <span style="font-weight: 700; color: #d97706;" id="dpAmount">Rp 0</span>
-                                                        </div>
-                                                        <div style="background: var(--gray-100); padding: 8px 12px; border-radius: var(--radius-md);">
-                                                            <span style="font-size: 0.75rem; color: var(--gray-500);">Sisa:</span><br>
-                                                            <span style="font-weight: 600; color: var(--gray-600);" id="remainingAmount">Rp 0</span>
-                                                        </div>
-                                                    </div>
-                                                </div>
+                                            <div style="color: #78350f; font-size: 0.875rem; margin-bottom: 12px;">
+                                                Bayar Rp100.000 dulu, sisanya <?php echo $dpDeadlineDays == 0 ? 'di hari H' : $dpDeadlineDays . ' hari sebelum main'; ?>
                                             </div>
-                                        </label>
-                                    </div>
-
-                                    <div class="alert alert-info mt-3" style="background: #eff6ff; border-left: 4px solid #3b82f6; padding: 12px;">
-                                        <p style="margin: 0; font-size: 0.8125rem; color: #1e40af;">
-                                            <i data-lucide="info" width="16" height="16" style="vertical-align: middle; margin-right: 4px;"></i>
-                                            <strong>Penting:</strong> Jika memilih DP, sisa pembayaran <strong>wajib dilunasi <?php echo $dpDeadlineDays == 0 ? 'sebelum jam main' : $dpDeadlineDays . ' hari sebelum tanggal main'; ?></strong>.
-                                            Booking akan dibatalkan otomatis jika tidak dilunasi tepat waktu.
-                                        </p>
-                                    </div>
-                                </div>
-
-                                <!-- Full Payment Only Section (shown by default, hidden when DP is available) -->
-                                <div id="fullPaymentOnlySection">
-                                    <input type="hidden" name="payment_type" id="paymentTypeFallback" value="full">
-                                    <div style="padding: var(--space-lg); background: linear-gradient(135deg, var(--primary-50), var(--primary-100)); border: 2px solid var(--primary-200); border-radius: var(--radius-lg);">
-                                        <div style="display: flex; align-items: center; gap: var(--space-md);">
-                                            <div style="width: 48px; height: 48px; background: var(--primary-500); border-radius: var(--radius-lg); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
-                                                <i data-lucide="credit-card" width="24" height="24" style="color: white;"></i>
-                                            </div>
-                                            <div>
-                                                <div style="font-weight: 700; font-size: 1rem; color: var(--primary-700);">Minimal DP 100k</div>
-                                                <div id="fullPaymentOnlyDesc" style="color: var(--primary-600); font-size: 0.875rem;">
-                                                    DP minimal Rp 100.000 untuk konfirmasi booking
+                                            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                                                <div style="background: #fef3c7; padding: 8px 12px; border-radius: var(--radius-md);">
+                                                    <span style="font-size: 0.75rem; color: #92400e;">Bayar Sekarang:</span><br>
+                                                    <span style="font-weight: 700; color: #d97706; font-size: 1rem;">Rp 100.000</span>
+                                                </div>
+                                                <div style="background: var(--gray-100); padding: 8px 12px; border-radius: var(--radius-md);">
+                                                    <span style="font-size: 0.75rem; color: var(--gray-500);">Sisa:</span><br>
+                                                    <span style="font-weight: 600; color: var(--gray-700); font-size: 1rem;" id="remainingAmount">-</span>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                    <div id="promoActiveAlert" class="alert alert-success mt-3" style="background: #f0fdf4; border-left: 4px solid #22c55e; padding: 12px; display: none;">
-                                        <p style="margin: 0; font-size: 0.8125rem; color: #166534;">
-                                            <i data-lucide="sparkles" width="16" height="16" style="vertical-align: middle; margin-right: 4px;"></i>
-                                            <strong>Promo Aktif!</strong> <span id="promoAlertText">Nikmati harga spesial dengan pembayaran lunas.</span>
-                                        </p>
-                                    </div>
+                                </div>
+                                <div class="alert alert-info mt-3" style="background: #eff6ff; border-left: 4px solid #3b82f6; padding: 12px;">
+                                    <p style="margin: 0; font-size: 0.8125rem; color: #1e40af;">
+                                        <i data-lucide="info" width="16" height="16" style="vertical-align: middle; margin-right: 4px;"></i>
+                                        <strong>Penting:</strong> Sisa pembayaran <strong>wajib dilunasi <?php echo $dpDeadlineDays == 0 ? 'sebelum jam main' : $dpDeadlineDays . ' hari sebelum tanggal main'; ?></strong>.
+                                        Booking akan dibatalkan otomatis jika tidak dilunasi tepat waktu.
+                                    </p>
                                 </div>
                             </div>
+
 
                             <button type="submit" class="btn btn-primary btn-lg btn-block">
                                 <i data-lucide="check-circle" width="20" height="20"></i>
@@ -696,50 +642,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
 
-        // Update payment section visibility based on DP availability
+        // Payment section is now always DP flat Rp100.000 — no visibility toggle needed
         function updatePaymentSectionVisibility() {
-            const dpSection = document.getElementById('dpAvailableSection');
-            const fullOnlySection = document.getElementById('fullPaymentOnlySection');
-            const fullOnlyDesc = document.getElementById('fullPaymentOnlyDesc');
-            const promoAlert = document.getElementById('promoActiveAlert');
-            const promoAlertText = document.getElementById('promoAlertText');
-            const paymentTypeFallback = document.getElementById('paymentTypeFallback');
-
-            if (dpAvailableForDate) {
-                // Show DP option
-                dpSection.style.display = 'block';
-                fullOnlySection.style.display = 'none';
-
-                // Disable the fallback hidden input so radio buttons work
-                if (paymentTypeFallback) paymentTypeFallback.disabled = true;
-
-                // Ensure full payment is selected by default
-                const fullPaymentRadio = document.querySelector('input[name="payment_type"][value="full"]');
-                if (fullPaymentRadio) fullPaymentRadio.checked = true;
-            } else {
-                // Show full payment only
-                dpSection.style.display = 'none';
-                fullOnlySection.style.display = 'block';
-
-                // Enable the fallback hidden input for full payment
-                if (paymentTypeFallback) paymentTypeFallback.disabled = false;
-
-                // Update description based on promo status
-                if (currentPromoInfo) {
-                    fullOnlyDesc.textContent = 'Selama periode promo, pembayaran dilakukan secara penuh';
-                    promoAlert.style.display = 'block';
-                    promoAlertText.textContent = `Diskon ${currentPromoInfo.discount}% dari ${currentPromoInfo.name}! Nikmati harga spesial dengan pembayaran lunas.`;
-                } else if (!dpEnabledSetting) {
-                    fullOnlyDesc.textContent = 'Pembayaran penuh untuk konfirmasi booking';
-                    promoAlert.style.display = 'none';
-                } else {
-                    fullOnlyDesc.textContent = 'Pembayaran penuh untuk konfirmasi booking';
-                    promoAlert.style.display = 'none';
-                }
-            }
-
-            // Re-create lucide icons for newly visible elements
-            lucide.createIcons();
+            updateSummary();
         }
 
         // Filter and update available time slots
@@ -871,32 +776,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Update payment amounts
             updatePaymentAmounts(total);
 
-            // Get selected payment type
-            const selectedPaymentType = document.querySelector('input[name="payment_type"]:checked');
-            const paymentType = selectedPaymentType ? selectedPaymentType.value : 'full';
-
-            // Calculate display amount based on payment type
-            let displayAmount = total;
-            let paymentLabel = 'Total';
-
-            if (dpAvailableForDate && paymentType === 'dp') {
-                displayAmount = dpAmount;
-                paymentLabel = 'Bayar Sekarang (DP)';
-            }
+            // Always DP flat Rp100.000
+            const displayAmount = dpAmount;
 
             // Format date
             const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
             const formattedDate = dateObj.toLocaleDateString('id-ID', options);
 
-            let paymentTypeHtml = '';
-            if (dpAvailableForDate) {
-                paymentTypeHtml = `
-                    <div class="d-flex justify-between mb-1">
-                        <span class="text-muted">Metode Bayar</span>
-                        <span class="badge ${paymentType === 'dp' ? 'badge-warning' : 'badge-success'}">${paymentType === 'dp' ? 'DP Rp100.000' : 'Lunas'}</span>
-                    </div>
-                `;
-            }
+            const paymentTypeHtml = `
+                <div class="d-flex justify-between mb-1">
+                    <span class="text-muted">Metode Bayar</span>
+                    <span class="badge badge-warning">DP Rp100.000</span>
+                </div>
+            `;
 
             summaryContent.innerHTML = `
                 <div style="margin-bottom: var(--space-md); padding-bottom: var(--space-md); border-bottom: 1px solid var(--gray-100);">
@@ -927,28 +819,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </div>
             `;
 
-            // Update total display based on payment type
-            if (dpAvailableForDate && paymentType === 'dp') {
-                totalPriceEl.innerHTML = `<span style="font-size: 0.875rem; color: var(--gray-500); display: block;">Bayar Sekarang</span>Rp ${displayAmount.toLocaleString('id-ID')}`;
-            } else {
-                totalPriceEl.textContent = 'Rp ' + displayAmount.toLocaleString('id-ID');
-            }
+            // Always show DP amount
+            totalPriceEl.innerHTML = `<span style="font-size: 0.875rem; color: var(--gray-500); display: block;">Bayar Sekarang</span>Rp ${displayAmount.toLocaleString('id-ID')}`;
         }
 
-        // Update payment option amounts
+        // Update payment amounts: update remaining (total minus DP flat)
         function updatePaymentAmounts(total) {
-            const fullPaymentEl = document.getElementById('fullPaymentAmount');
-            const dpAmountEl = document.getElementById('dpAmount');
             const remainingAmountEl = document.getElementById('remainingAmount');
-
-            if (fullPaymentEl) {
-                fullPaymentEl.textContent = 'Rp ' + total.toLocaleString('id-ID');
-            }
-
-            if (dpAmountEl && remainingAmountEl) {
-                const dpAmt = dpAmount;
-                const remaining = total - dpAmt;
-                dpAmountEl.textContent = 'Rp ' + dpAmount.toLocaleString('id-ID');
+            if (remainingAmountEl) {
+                const remaining = total - dpAmount;
                 remainingAmountEl.textContent = 'Rp ' + remaining.toLocaleString('id-ID');
             }
         }
