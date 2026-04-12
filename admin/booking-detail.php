@@ -207,23 +207,23 @@ $discount = $booking['base_price'] - ($booking['total_price'] - $servicesTotal);
                                 Konfirmasi DP
                             </a>
                             <?php else: ?>
-                            <a href="?id=<?php echo $id; ?>&action=confirm" class="btn btn-primary" onclick="return confirm('Konfirmasi booking ini?')">
+                            <a href="?id=<?php echo $id; ?>&action=confirm" class="btn btn-primary">
                                 <i data-lucide="check-circle" width="18" height="18"></i>
                                 Konfirmasi
                             </a>
                             <?php endif; ?>
-                        <a href="?id=<?php echo $id; ?>&action=cancel" class="btn btn-outline" onclick="return confirm('Batalkan booking ini?')">
+                        <a href="?id=<?php echo $id; ?>&action=cancel" class="btn btn-outline">
                             <i data-lucide="x-circle" width="18" height="18"></i>
                             Batalkan
                         </a>
                         <?php elseif ($booking['status'] === 'confirmed'): ?>
                             <?php if ($isDP && $booking['payment_status'] !== 'paid'): ?>
-                            <a href="?id=<?php echo $id; ?>&action=mark-paid" class="btn btn-success" onclick="return confirm('Tandai sisa pembayaran sudah dilunasi?')">
+                            <a href="?id=<?php echo $id; ?>&action=mark-paid" class="btn btn-success">
                                 <i data-lucide="banknote" width="18" height="18"></i>
                                 Lunasi Sisa
                             </a>
                             <?php endif; ?>
-                        <a href="?id=<?php echo $id; ?>&action=complete" class="btn btn-primary" onclick="return confirm('Tandai booking ini selesai?')">
+                        <a href="?id=<?php echo $id; ?>&action=complete" class="btn btn-primary">
                             <i data-lucide="check-check" width="18" height="18"></i>
                             Selesai
                         </a>
@@ -499,7 +499,7 @@ $discount = $booking['base_price'] - ($booking['total_price'] - $servicesTotal);
                                     <?php endif; ?>
 
                                     <?php if ($booking['payment_status'] !== 'paid'): ?>
-                                    <a href="?id=<?php echo $id; ?>&action=mark-paid" class="btn btn-sm btn-primary mt-2 btn-block" onclick="return confirm('Tandai pembayaran sebagai lunas?')">
+                                    <a href="?id=<?php echo $id; ?>&action=mark-paid" class="btn btn-sm btn-primary mt-2 btn-block">
                                         <i data-lucide="check" width="14" height="14"></i>
                                         <?php echo $isDP ? 'Lunasi Sisa Pembayaran' : 'Tandai Lunas'; ?>
                                     </a>

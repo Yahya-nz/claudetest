@@ -352,24 +352,24 @@ $bookings = $stmt->fetchAll();
                                                     <i data-lucide="wallet" width="14" height="14"></i>
                                                 </a>
                                                 <?php else: ?>
-                                                <a href="?action=confirm&id=<?php echo $booking['id']; ?>" class="action-btn action-btn-view" title="Konfirmasi" onclick="return confirm('Konfirmasi?')">
+                                                <a href="?action=confirm&id=<?php echo $booking['id']; ?>" class="action-btn action-btn-view" title="Konfirmasi">
                                                     <i data-lucide="check" width="14" height="14"></i>
                                                 </a>
                                                 <?php endif; ?>
-                                                <a href="?action=cancel&id=<?php echo $booking['id']; ?>" class="action-btn action-btn-delete" title="Batalkan" onclick="return confirm('Batalkan?')">
+                                                <a href="?action=cancel&id=<?php echo $booking['id']; ?>" class="action-btn action-btn-delete" title="Batalkan">
                                                     <i data-lucide="x" width="14" height="14"></i>
                                                 </a>
                                             <?php elseif ($booking['status'] === 'confirmed'): ?>
                                                 <?php if ($paymentType === 'dp' && $booking['payment_status'] !== 'paid'): ?>
-                                                <a href="?action=mark_paid&id=<?php echo $booking['id']; ?>" class="action-btn action-btn-view" title="Lunasi" onclick="return confirm('Lunasi sisa?')">
+                                                <a href="?action=mark_paid&id=<?php echo $booking['id']; ?>" class="action-btn action-btn-view" title="Lunasi">
                                                     <i data-lucide="banknote" width="14" height="14"></i>
                                                 </a>
                                                 <?php endif; ?>
-                                                <a href="?action=complete&id=<?php echo $booking['id']; ?>" class="action-btn action-btn-view" title="Selesai" onclick="return confirm('Selesaikan?')">
+                                                <a href="?action=complete&id=<?php echo $booking['id']; ?>" class="action-btn action-btn-view" title="Selesai">
                                                     <i data-lucide="check-check" width="14" height="14"></i>
                                                 </a>
                                             <?php endif; ?>
-                                            <a href="?action=delete&id=<?php echo $booking['id']; ?>" class="action-btn action-btn-delete" title="Hapus" onclick="return confirm('Hapus permanen?')">
+                                            <a href="?action=delete&id=<?php echo $booking['id']; ?>" class="action-btn action-btn-delete" title="Hapus">
                                                 <i data-lucide="trash-2" width="14" height="14"></i>
                                             </a>
                                         </div>
