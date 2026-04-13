@@ -34,14 +34,16 @@ if (isset($_GET['action'])) {
                 'total_price' => $booking['total_price']
             ];
 
-            $notificationResults = sendBookingNotification($notificationData, 'confirmed');
-
-            // Log notifications
-            if ($notificationResults['email']) {
-                logNotification($id, 'confirmed', 'email', 'success');
-            }
-            if (isset($notificationResults['whatsapp']['success']) && $notificationResults['whatsapp']['success']) {
-                logNotification($id, 'confirmed', 'whatsapp', 'success');
+            try {
+                $notificationResults = sendBookingNotification($notificationData, 'confirmed');
+                if ($notificationResults['email']) {
+                    logNotification($id, 'confirmed', 'email', 'success');
+                }
+                if (isset($notificationResults['whatsapp']['success']) && $notificationResults['whatsapp']['success']) {
+                    logNotification($id, 'confirmed', 'whatsapp', 'success');
+                }
+            } catch (Exception $e) {
+                error_log('confirm notification error: ' . $e->getMessage());
             }
         }
 
@@ -118,14 +120,16 @@ if (isset($_GET['action'])) {
                 'dp_deadline' => $booking['dp_deadline'] ?? null
             ];
 
-            $notificationResults = sendBookingNotification($notificationData, 'confirmed');
-
-            // Log notifications
-            if ($notificationResults['email']) {
-                logNotification($id, 'confirmed', 'email', 'success');
-            }
-            if (isset($notificationResults['whatsapp']['success']) && $notificationResults['whatsapp']['success']) {
-                logNotification($id, 'confirmed', 'whatsapp', 'success');
+            try {
+                $notificationResults = sendBookingNotification($notificationData, 'confirmed');
+                if ($notificationResults['email']) {
+                    logNotification($id, 'confirmed', 'email', 'success');
+                }
+                if (isset($notificationResults['whatsapp']['success']) && $notificationResults['whatsapp']['success']) {
+                    logNotification($id, 'confirmed', 'whatsapp', 'success');
+                }
+            } catch (Exception $e) {
+                error_log('confirm_dp notification error: ' . $e->getMessage());
             }
         }
 

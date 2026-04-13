@@ -55,10 +55,13 @@ if (isset($_GET['action'])) {
                 'dp_deadline' => $bookingForNotif['dp_deadline'] ?? null
             ];
 
-            $notificationResults = sendBookingNotification($notificationData, 'confirmed');
-
-            if ($notificationResults['email'] || (isset($notificationResults['whatsapp']['success']) && $notificationResults['whatsapp']['success'])) {
-                $_SESSION['flash_message'] .= ' Notifikasi telah dikirim ke customer.';
+            try {
+                $notificationResults = sendBookingNotification($notificationData, 'confirmed');
+                if ($notificationResults['email'] || (isset($notificationResults['whatsapp']['success']) && $notificationResults['whatsapp']['success'])) {
+                    $_SESSION['flash_message'] .= ' Notifikasi telah dikirim ke customer.';
+                }
+            } catch (Exception $e) {
+                error_log('confirm notification error: ' . $e->getMessage());
             }
         }
         $_SESSION['flash_type'] = 'success';
