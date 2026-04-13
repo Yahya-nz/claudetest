@@ -42,7 +42,7 @@ if (isset($_GET['action'])) {
                 if (isset($notificationResults['whatsapp']['success']) && $notificationResults['whatsapp']['success']) {
                     logNotification($id, 'confirmed', 'whatsapp', 'success');
                 }
-            } catch (Exception $e) {
+            } catch (\Throwable $e) {
                 error_log('confirm notification error: ' . $e->getMessage());
             }
         }
@@ -77,14 +77,16 @@ if (isset($_GET['action'])) {
                 'total_price' => $booking['total_price']
             ];
 
-            $notificationResults = sendBookingNotification($notificationData, 'completed');
-
-            // Log notifications
-            if ($notificationResults['email']) {
-                logNotification($id, 'completed', 'email', 'success');
-            }
-            if (isset($notificationResults['whatsapp']['success']) && $notificationResults['whatsapp']['success']) {
-                logNotification($id, 'completed', 'whatsapp', 'success');
+            try {
+                $notificationResults = sendBookingNotification($notificationData, 'completed');
+                if ($notificationResults['email']) {
+                    logNotification($id, 'completed', 'email', 'success');
+                }
+                if (isset($notificationResults['whatsapp']['success']) && $notificationResults['whatsapp']['success']) {
+                    logNotification($id, 'completed', 'whatsapp', 'success');
+                }
+            } catch (\Throwable $e) {
+                error_log('complete notification error: ' . $e->getMessage());
             }
         }
 
@@ -128,7 +130,7 @@ if (isset($_GET['action'])) {
                 if (isset($notificationResults['whatsapp']['success']) && $notificationResults['whatsapp']['success']) {
                     logNotification($id, 'confirmed', 'whatsapp', 'success');
                 }
-            } catch (Exception $e) {
+            } catch (\Throwable $e) {
                 error_log('confirm_dp notification error: ' . $e->getMessage());
             }
         }

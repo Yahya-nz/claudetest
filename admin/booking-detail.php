@@ -60,7 +60,7 @@ if (isset($_GET['action'])) {
                 if ($notificationResults['email'] || (isset($notificationResults['whatsapp']['success']) && $notificationResults['whatsapp']['success'])) {
                     $_SESSION['flash_message'] .= ' Notifikasi telah dikirim ke customer.';
                 }
-            } catch (Exception $e) {
+            } catch (\Throwable $e) {
                 error_log('confirm notification error: ' . $e->getMessage());
             }
         }
@@ -92,11 +92,15 @@ if (isset($_GET['action'])) {
                 'dp_deadline' => $bookingForNotif['dp_deadline'] ?? null
             ];
 
-            $notificationResults = sendBookingNotification($notificationData, 'completed');
-
-            $_SESSION['flash_message'] = 'Booking berhasil diselesaikan.';
-            if ($notificationResults['email'] || (isset($notificationResults['whatsapp']['success']) && $notificationResults['whatsapp']['success'])) {
-                $_SESSION['flash_message'] .= ' Notifikasi telah dikirim ke customer.';
+            try {
+                $notificationResults = sendBookingNotification($notificationData, 'completed');
+                $_SESSION['flash_message'] = 'Booking berhasil diselesaikan.';
+                if ($notificationResults['email'] || (isset($notificationResults['whatsapp']['success']) && $notificationResults['whatsapp']['success'])) {
+                    $_SESSION['flash_message'] .= ' Notifikasi telah dikirim ke customer.';
+                }
+            } catch (\Throwable $e) {
+                error_log('completed notification error: ' . $e->getMessage());
+                $_SESSION['flash_message'] = 'Booking berhasil diselesaikan.';
             }
         } else {
             $_SESSION['flash_message'] = 'Booking berhasil diselesaikan.';
